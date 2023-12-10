@@ -3,6 +3,7 @@ package com.example.movieapp.data.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import com.example.movieapp.data.local.MovieEntity
 
 @Dao
 interface MovieDao {

@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.toArgb
@@ -53,4 +54,18 @@ fun GetAverageColor(imageBitmap: ImageBitmap): androidx.compose.ui.graphics.Colo
     }
     val hsl = FloatArray(3)
     ColorUtils.colorToHSL(averageColor.toArgb(), hsl)
+
+    //Decrease the lightness component by a desired amount
+    val darkerLightness = hsl[2] - 0.1f //Adjust the amount to make it darker
+
+    //Create a new color with the modified Lightness component
+    val darkerColor = ColorUtils.HSLToColor(
+        floatArrayOf(
+            hsl[0],
+            hsl[1],
+            darkerLightness
+        )
+    )
+
+    return Color(darkerColor)
 }

@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 
 @Composable
-fun GetAverageColor(imageBitmap: ImageBitmap): androidx.compose.ui.graphics.Color {
-    var averageColor by remember { mutableStateOf(androidx.compose.ui.graphics.Color.Transparent) }
+fun getAverageColor(imageBitmap: ImageBitmap): Color {
+    var averageColor by remember { mutableStateOf(Color.Transparent) }
 
     LaunchedEffect(key1 = Unit) {
         val compatibleBitmap = imageBitmap.asAndroidBitmap()
@@ -50,7 +50,7 @@ fun GetAverageColor(imageBitmap: ImageBitmap): androidx.compose.ui.graphics.Colo
         val averageBlue = blueSum / pixelCount
 
         //Set the average color as the result
-        averageColor = androidx.compose.ui.graphics.Color(averageRed, averageGreen, averageBlue)
+        averageColor = Color(averageRed, averageGreen, averageBlue)
     }
     val hsl = FloatArray(3)
     ColorUtils.colorToHSL(averageColor.toArgb(), hsl)

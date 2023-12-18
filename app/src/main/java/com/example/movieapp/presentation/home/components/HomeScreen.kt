@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -25,40 +26,43 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.movieapp.presentation.home.MovieListState
 import com.example.movieapp.presentation.home.MovieListUiEvent
+import com.example.movieapp.presentation.home.MovieListViewModel
 import com.example.movieapp.ui.theme.MovieAppTheme
 import com.example.movieapp.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onEvent: (MovieListUiEvent) -> Unit,
-    state: MovieListState,
-    navController: NavController
+    navController: NavHostController
 ) {
+    val movieListViewModel = hiltViewModel<MovieListViewModel>()
+    val movieListState = movieListViewModel.state.collectAsState().value
     val bottomNavController = rememberNavController()
 
     Scaffold(
         bottomBar = {
             BottomNavigationBar(
                 bottomNavController = bottomNavController ,
-                onEvent = onEvent
+                onEvent = movieListViewModel::onEvent
             )
         },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = if (state.isCurrentPopularScreen){
+                        text = if (movieListState.isCurrentPopularScreen){
                             "Popular Movies"
                         } else {
                             "Upcoming Movies"
-                        }
+                        },
+                        fontSize = 20.sp
                     )
                 },
                 modifier = Modifier.shadow(2.dp),
@@ -79,20 +83,27 @@ fun HomeScreen(
                 startDestination = Screen.PopularMovieList.route
             ) {
                 composable(Screen.PopularMovieList.route) {
-//                    PopularMoviesScreen()
+                    PopularMovieScreen(
+                        movieListState = movieListState,
+                        navController = navController,
+                        onEvent = movieListViewModel::onEvent
+                    )
                 }
                 composable(Screen.UpcomingMovieList.route) {
-//                    UpcomingMoviesScreen()
+                    UpcomingMovieScreen(
+                        movieListState = movieListState,
+                        navController = navController,
+                        onEvent = movieListViewModel::onEvent
+                    )
                 }
             }
         }
     }
-
 }
 
 @Composable
 fun BottomNavigationBar(
-    bottomNavController: NavController,
+    bottomNavController: NavHostController,
     onEvent: (MovieListUiEvent) -> Unit
 ) {
 
@@ -150,7 +161,6 @@ fun BottomNavigationBar(
             }
         }
     }
-
 }
 
 data class BottomItem( //bottom bar structure
@@ -158,14 +168,3 @@ data class BottomItem( //bottom bar structure
     val icon: ImageVector
 )
 
-@Preview
-@Composable
-fun PreviewHomeScreen() {
-    MovieAppTheme {
-        HomeScreen(
-            onEvent = {},
-            state = MovieListState(),
-            navController = rememberNavController()
-        )
-    }
-}

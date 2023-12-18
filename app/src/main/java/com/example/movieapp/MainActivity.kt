@@ -6,15 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.movieapp.presentation.home.MovieListViewModel
+import com.example.movieapp.presentation.details.component.DetailsScreen
 import com.example.movieapp.presentation.home.components.HomeScreen
 import com.example.movieapp.ui.theme.MovieAppTheme
 import com.example.movieapp.util.Screen
@@ -38,10 +36,9 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.Home.route
                     ) {
                         composable(Screen.Home.route) {
-                            val movieListviewModel = hiltViewModel<MovieListViewModel>()
-                            val state = movieListviewModel.state.collectAsState()
-                            val event = movieListviewModel::onEvent
-                            HomeScreen(onEvent = event ,state = state.value, navController = navController)
+                            HomeScreen(
+                                navController = navController
+                            )
 
                         }
                         composable(
@@ -50,7 +47,7 @@ class MainActivity : ComponentActivity() {
                                 navArgument("movieId") {type = NavType.IntType}
                             )
                         ) {
-
+                                DetailsScreen()
                         }
                     }
                 }

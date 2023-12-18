@@ -6,20 +6,21 @@ import androidx.room.PrimaryKey
 @Entity
 data class MovieEntity(
     val adult: Boolean,
-    val backdropPath: String,
-    val genreIds: String,
-    val originalLanguage: String,
-    val originalTitle: String,
+    val backdrop_path: String,
+    val genre_ids: String,
+    val original_language: String,
+    val original_title: String,
     val overview: String,
     val popularity: Double,
-    val posterPath: String,
-    val releaseDate: String,
+    val poster_path: String,
+    val release_date: String,
     val title: String,
     val video: Boolean,
-    val voteAverage: Double,
-    val voteCount: Int,
+    val vote_average: Double,
+    val vote_count: Int,
 
     @PrimaryKey
     val id: Int,
-    val category: String
+
+    val category: String,
 )

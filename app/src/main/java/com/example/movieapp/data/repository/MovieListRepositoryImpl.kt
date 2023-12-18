@@ -2,8 +2,8 @@ package com.example.movieapp.data.repository
 
 import com.example.movieapp.data.local.MovieDatabase
 import com.example.movieapp.data.remote.MovieApi
-import com.example.movieapp.domain.mappers.toMovie
-import com.example.movieapp.domain.mappers.toMovieEntity
+import com.example.movieapp.data.mappers.toMovie
+import com.example.movieapp.data.mappers.toMovieEntity
 import com.example.movieapp.domain.model.Movie
 import com.example.movieapp.domain.repository.MovieListRepository
 import com.example.movieapp.util.Resource
@@ -37,6 +37,7 @@ class MovieListRepositoryImpl @Inject constructor(
                         }
                     )
                 )
+                emit(Resource.Loading(isLoading = false))
                 return@flow
             }
 
@@ -56,16 +57,16 @@ class MovieListRepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            val movieEntities = movieListFromApi.data?.results.let { resultList -> //data from the api mapped from api to entity
-                resultList?.map {
+            val movieEntities = movieListFromApi.results.let { resultList -> //data from the api mapped from api to entity
+                resultList.map {
                     it.toMovieEntity(category)
                 }
             }
 
-            movieDb.movieDao.upsertMovieList(movieEntities ?: emptyList())
+            movieDb.movieDao.upsertMovieList(movieEntities)
 
             emit(Resource.Success(
-                    data = movieEntities?.map {
+                    data = movieEntities.map {
                         it.toMovie(category) //new data mapped to movie model used in ui
                     }
                 )
@@ -79,17 +80,19 @@ class MovieListRepositoryImpl @Inject constructor(
             emit(Resource.Loading(true))
 
             val movieEntity = movieDb.movieDao.getMovieById(id)
-            try {
-                emit(
-                    Resource.Success(
-                        movieEntity.toMovie(movieEntity.category)
-                    )
+
+            emit(
+                Resource.Success(
+                    movieEntity.toMovie(movieEntity.category)
                 )
-                emit(
-                    Resource.Loading(false)
-                )
-            } catch (e: Exception) {
-                emit(Resource.Loading(false))
-            }
+            )
+            emit(
+                Resource.Loading(false)
+            )
+
+
+            emit(Resource.Error(message = "Error no such movie", data = null))
+
+            emit(Resource.Loading(false))
         }
 }

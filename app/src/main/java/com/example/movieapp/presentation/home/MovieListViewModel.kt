@@ -7,6 +7,7 @@ import com.example.movieapp.util.Category
 import com.example.movieapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ class MovieListViewModel @Inject constructor(
 ): ViewModel() {
 
     private var _state = MutableStateFlow(MovieListState())
-    val state = _state
+    val state = _state.asStateFlow()
 
     init {
         getPopularMovieList(false)
@@ -52,7 +53,7 @@ class MovieListViewModel @Inject constructor(
             repository.getMovieList(
                 forceFetchFromRemote,
                 category = Category.POPULAR,
-                page = _state.value.upcomingMovieListPage
+                page = _state.value.popularMovieListPage
             ).collectLatest {  result ->//Resource<List<Movie>>
                 when(result) {
                     is Resource.Error -> {
@@ -71,7 +72,8 @@ class MovieListViewModel @Inject constructor(
                         result.data?.let {  popularList ->//List<Movie>
                             _state.update {
                                 it.copy(
-                                    popularMovieList = state.value.popularMovieList + popularList.shuffled()
+                                    popularMovieList = state.value.popularMovieList + popularList.shuffled(),
+                                    popularMovieListPage = state.value.popularMovieListPage + 1
                                 )
                             }
                         }
@@ -88,7 +90,7 @@ class MovieListViewModel @Inject constructor(
             }
 
             repository.getMovieList(
-                forceFetchFromRemote = true,
+                forceFetchFromRemote,
                 category = Category.UPCOMING,
                 page = _state.value.upcomingMovieListPage
             ).collectLatest { result ->//Resource<List<Movie>>
@@ -109,7 +111,8 @@ class MovieListViewModel @Inject constructor(
                         result.data?.let {  upcomingList ->//List<Movie>
                             _state.update {
                                 it.copy(
-                                    upcomingMovieList = state.value.upcomingMovieList + upcomingList.shuffled()
+                                    upcomingMovieList = state.value.upcomingMovieList + upcomingList.shuffled(),
+                                    upcomingMovieListPage = state.value.upcomingMovieListPage + 1
                                 )
                             }
                         }

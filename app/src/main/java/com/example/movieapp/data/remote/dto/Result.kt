@@ -1,31 +1,20 @@
 package com.example.movieapp.data.remote.dto
 
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Result(
     val adult: Boolean?,
-    @SerialName("backdrop_path")
-    val backdropPath: String?,
-    @SerialName("genre_ids")
-    val genreIds: List<Int>?,
+    val backdrop_path: String?,
+    val genre_ids: List<Int>?,
     val id: Int?,
-    @SerialName("original_language")
-    val originalLanguage: String?,
-    @SerialName("original_title")
-    val originalTitle: String?,
+    val original_language: String?,
+    val original_title: String?,
     val overview: String?,
     val popularity: Double?,
-    @SerialName("poster_path")
-    val posterPath: String?,
-    @SerialName("release_date")
-    val releaseDate: String?,
+    val poster_path: String?,
+    val release_date: String?,
     val title: String?,
     val video: Boolean?,
-    @SerialName("vote_average")
-    val voteAverage: Double?,
-    @SerialName("vote_count")
-    val voteCount: Int?
+    val vote_average: Double?,
+    val vote_count: Int?
 )

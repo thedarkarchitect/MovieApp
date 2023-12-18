@@ -46,6 +46,7 @@ object AppModule {
             app,
             MovieDatabase::class.java,
             "movie_db"
-        ).build()
+        )   .fallbackToDestructiveMigration()
+            .build()
     }
 }
